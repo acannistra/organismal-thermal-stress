@@ -17,4 +17,5 @@ These data are in XYZ point files, which I need to convert to rasters. I impleme
 
 For a sanity check I'm creating a static viz of just body temperatures. 
 
-!(testfigure)[./notebooks/testfigure.png]
+
+![test](./notebooks/testfigure.png)
