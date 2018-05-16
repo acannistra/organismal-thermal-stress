@@ -11,10 +11,10 @@ From our lab in the Department of Biology I have access to several decades of da
 
 ### Gridding Data
 
-These data are in XYZ point files, which I need to convert to rasters. I implement a prototype in Python/GDAL (here)[notebooks/Grid + Visualize.ipynb].
+These data are in XYZ point files, which I need to convert to rasters. I implement a prototype in Python/GDAL (here)[./notebooks/Grid + Visualize.ipynb].
 
 ### Static Visualization
 
 For a sanity check I'm creating a static viz of just body temperatures. 
 
-!(testfigure)[notebooks/testfigure.png]
+!(testfigure)[./notebooks/testfigure.png]
