@@ -7,3 +7,14 @@ Anthropogenic climate change is having a dramatic effect on earth’s natural sy
 
 From our lab in the Department of Biology I have access to several decades of daily (noontime) body temperature values for several cold-blooded species (butterflies/lizards) in a 30km grid across the state of Colorado. By applying a biophysical threshold to these body temperatures, we can obtain a binary thermal stress classification. For this project I intend to visualize the spatial and temporal dimensions of this thermal stress. Are there locations which are particularly stressful for organisms? What percentage of an organisms’ known range is experiencing stressful conditions today/this year/this decade? Working in collaboration with my advisor Dr. Lauren Buckley, I intend to build a visualization which helps to elucidate answers to these questions using model output from our lab.
 
+## Initial Progress
+
+### Gridding Data
+
+These data are in XYZ point files, which I need to convert to rasters. I implement a prototype in Python/GDAL [here](notebooks/Grid + Visualize.ipynb). 
+
+### Static Visualization
+
+For a sanity check I'm creating a static viz of just body temperatures. 
+
+![notebooks/testfigure.png]
