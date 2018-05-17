@@ -1,0 +1,7 @@
+<OGRVRTDataSource>
+    <OGRVRTLayer name="jan1981To">
+        <SrcDataSource>jan1981To.csv</SrcDataSource>
+        <GeometryType>wkbPoint</GeometryType>
+        <GeometryField encoding="PointFromColumns" x="lon" y="lat" z="To_Lizard"/>
+    </OGRVRTLayer>
+</OGRVRTDataSource>
