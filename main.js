@@ -13,11 +13,11 @@ var map = new mapboxgl.Map({
 
 map.on('load', function(x){
 	map.fitBounds(new mapboxgl.LngLatBounds([-110.63,36.43],[-100.747,42.1094987784]));
-	var img = d3.csv('./notebooks/piltest.ref', function(d) {
+	var img = d3.csv('notebooks/piltest.ref', function(d) {
 		console.log(d)
 		d = d.columns
 
-		map.addSource('stress-poly-src', { type: 'geojson', data: "./notebooks/piltest.gif.geojson" });
+		map.addSource('stress-poly-src', { type: 'geojson', data: "notebooks/piltest.gif.geojson" });
 
 
 		map.addLayer({
@@ -34,7 +34,7 @@ map.on('load', function(x){
 			"type" : 'raster',
 			'source' : {
 				"type" : 'image', 
-				"url"  : "./notebooks/" + d[0],
+				"url"  : "notebooks/" + d[0],
 
 				'coordinates' : [
 					[parseFloat(d[1]), parseFloat(d[3])], // [top, left]
