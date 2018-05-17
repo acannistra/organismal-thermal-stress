@@ -17,7 +17,7 @@ map.on('load', function(x){
 		console.log(d)
 		d = d.columns
 
-		map.addSource('stress-poly-src', { type: 'geojson', data: "/notebooks/piltest.gif.geojson" });
+		map.addSource('stress-poly-src', { type: 'geojson', data: "notebooks/piltest.gif.geojson" });
 
 
 		map.addLayer({
@@ -34,7 +34,7 @@ map.on('load', function(x){
 			"type" : 'raster',
 			'source' : {
 				"type" : 'image', 
-				"url"  : "../notebooks/" + d[0],
+				"url"  : "notebooks/" + d[0],
 
 				'coordinates' : [
 					[parseFloat(d[1]), parseFloat(d[3])], // [top, left]
