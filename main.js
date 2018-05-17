@@ -9,7 +9,7 @@ var map = new mapboxgl.Map({
 });
 
 
-
+var comma_formatter = d3.format(",.1f")
 
 map.on('load', function(x){
 	map.fitBounds(new mapboxgl.LngLatBounds([-110.63,36.43],[-100.747,42.1094987784]));
@@ -17,16 +17,18 @@ map.on('load', function(x){
 		console.log(d)
 		d = d.columns
 
+		d3.json("notebooks/piltest.gif.geojson", (d) => d3.select("#area-value").text(comma_formatter(turf.area(d)/ 2589988.110336))) // square miles
+
 		map.addSource('stress-poly-src', { type: 'geojson', data: "notebooks/piltest.gif.geojson" });
 
-
+		
 		map.addLayer({
 			"id" : "stress-poly", 
 			"type" : "fill", 
 			"source": 'stress-poly-src',
 			'paint': {
-            'fill-color': '#088',
-            'fill-opacity': 0.8}
+            'fill-color': 'red',
+            'fill-opacity': 0.6}
 		});
 
 		map.addLayer({
@@ -44,16 +46,22 @@ map.on('load', function(x){
 				]
 			}, 
 			'attribution' : "Buckley Lab",
-			"style" : {
-				'raster-opacity' : 0.85,
+			'paint' : {
+				'raster-opacity' : 0.30
 			}
+
 		});
+
+		// Adjustable Opacity
 
 		d3.select("#opacity").on('input', function(){
 			d3.select("#opacity-value").text(+this.value);
 			map.setPaintProperty('temps', 'raster-opacity', +this.value / 100);
 
 		})
+
+	
+
 
 	})
 
