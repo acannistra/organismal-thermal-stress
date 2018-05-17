@@ -17,6 +17,18 @@ map.on('load', function(x){
 		console.log(d)
 		d = d.columns
 
+		map.addSource('stress-poly-src', { type: 'geojson', data: "../notebooks/piltest.gif.geojson" });
+
+
+		map.addLayer({
+			"id" : "stress-poly", 
+			"type" : "fill", 
+			"source": 'stress-poly-src',
+			'paint': {
+            'fill-color': '#088',
+            'fill-opacity': 0.8}
+		});
+
 		map.addLayer({
 			"id" : "temps",
 			"type" : 'raster',
@@ -25,10 +37,10 @@ map.on('load', function(x){
 				"url"  : "../notebooks/" + d[0],
 
 				'coordinates' : [
-					[parseFloat(d[1]), parseFloat(d[4])], // [top, left]
-					[parseFloat(d[2]), parseFloat(d[4])], // [top, right]
-					[parseFloat(d[2]), parseFloat(d[3])], // [bottom, right]
-					[parseFloat(d[1]), parseFloat(d[3])]  // [bottom, left]
+					[parseFloat(d[1]), parseFloat(d[3])], // [top, left]
+					[parseFloat(d[2]), parseFloat(d[3])], // [top, right]
+					[parseFloat(d[2]), parseFloat(d[4])], // [bottom, right]
+					[parseFloat(d[1]), parseFloat(d[4])]  // [bottom, left]
 				]
 			}, 
 			'attribution' : "Buckley Lab",
