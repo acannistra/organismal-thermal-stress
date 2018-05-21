@@ -10,25 +10,27 @@
 <body>
 	<div class="map-container">
 		<div id='map' style="position: relative; height: 600px; width: 100%"></div>
-
+		<div class="map-overlay">
+			<div class='map-overlay-inner'>
+				<div id="legend">
+					<div class="box"></div>
+		        	<input type="range" min="1" max="100" value="30" id="opacity">
+					<div>T<sub>0</sub> Layer Opacity</div>
+				</div>
+		    </div>
+		</div>
 		<div id="timebrush" style="position: relative; height: 80px; width:900px">
 			
 		</div>
-<!-- 		<div style="position: relative; height: 20px">
-			
-			<div id="opacityslider">
-			  <label for="opacity" 
-			         style="display: inline-block; width: 240px; text-align: right">
-			         opacity = <span id="opacity-value">30</span>
-			  </label>
-			  <input type="range" min="1" max="100" value="30" id="opacity">
-			<div>
-			<div>area: <span id="area-value">...</span> mi<sup>2</sup></div>
-		</div> -->
-
 	</div>
 	<div class="sidebar-container">
-		<h1>test</h1>
+		<svg id="area-circle" width="200px" height="200px">
+			<circle r="85" cx="100" cy="100" style="fill:#C85744; opacity: 0.7; stroke:#010101;stroke-width:1.6871;stroke-miterlimit:10;">
+			</circle>
+			<text class="large" x="50%" y="48%" text-anchor="middle" dy=".3em">...</text>
+			<text class='small' x="50%" y="57%" text-anchor="middle" dy=".3em">square miles of stress</text>
+
+		</svg>
 	</div>
 	
 

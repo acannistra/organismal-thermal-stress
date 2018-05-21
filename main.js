@@ -32,7 +32,7 @@ map.on('load', function(x){
 		console.log(d)
 		d = d.columns
 
-		d3.json("notebooks/piltest.gif.geojson", (d) => d3.select("#area-value").text(comma_formatter(turf.area(d)/ 2589988.110336))) // square miles
+		d3.json("notebooks/piltest.gif.geojson", (d) => d3.select(".large").text(comma_formatter(turf.area(d)/ 2589988.110336))) // square miles
 
 		map.addSource('stress-poly-src', { type: 'geojson', data: "notebooks/piltest.gif.geojson" });
 
