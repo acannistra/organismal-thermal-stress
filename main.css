@@ -58,4 +58,5 @@ body{
 
 /**/
 svg .small { font: 10px sans-serif; }
+tspan .unit {font: 8px sans-serif;}
 svg .large { font: 30px sans-serif; }
