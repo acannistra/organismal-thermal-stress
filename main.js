@@ -94,6 +94,8 @@ map.on('load', function(x){
 })
 
 function drawTimeSlider(err, data){
+	// inspration: https://bl.ocks.org/mbostock/3883245
+
 	if (err) throw err; 
 
 
@@ -130,6 +132,17 @@ function drawTimeSlider(err, data){
 	.attr("stroke-linecap", "round")
 	.attr("stroke-width", 1.5)
 	.attr("d", line);
+
+	g.append("g")
+	    .call(d3.axisLeft(y))
+	  	.append("text")
+	    .attr("fill", "#000")
+	    .attr("transform", "rotate(-90)")
+	    .attr("y", 6)
+	    .attr("dy", "0.71em")
+	    .attr("text-anchor", "end")
+	    .text("Stress Area (mi<sup>2</sup>)");
+
 
 
 	// var line = d3.line()
