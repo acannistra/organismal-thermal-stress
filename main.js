@@ -134,14 +134,15 @@ function drawTimeSlider(err, data){
 	.attr("d", line);
 
 	g.append("g")
-	    .call(d3.axisLeft(y))
 	  	.append("text")
 	    .attr("fill", "#000")
 	    .attr("transform", "rotate(-90)")
-	    .attr("y", 6)
+	    .attr("y", 9)
 	    .attr("dy", "0.71em")
+	    .attr("x", 0)
 	    .attr("text-anchor", "end")
-	    .text("Stress Area (mi<sup>2</sup>)");
+	    .attr("font-size", "10")
+	    .text("Area (sq. mi)");
 
 
 
