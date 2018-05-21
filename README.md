@@ -9,13 +9,18 @@ From our lab in the Department of Biology I have access to several decades of da
 
 ## Initial Progress
 
-### Gridding Data
+### 1: Gridding Data
 
 These data are in XYZ point files, which I need to convert to rasters. I implement a prototype in Python/GDAL (here)[./notebooks/Grid + Visualize.ipynb].
 
-### Static Visualization
+### 2: Static Visualization Prototype
 
 For a sanity check I'm creating a static viz of just body temperatures. 
 
-
 ![test](./notebooks/testfigure.png)
+
+### 3: Dynamic Visualization Prototype
+
+The dynamic visualization will allow users to brush across recent history and view the body temperatures, stress zones, and land surface area experiencing stress using a time slider. Using D3.js and Mapbox.js I've begun to implement the dynamic visualization, which currently is using fake data and does not yet have a brushing facility implemented. 
+
+The visualization prototype can be viewed on the repo's [GitHub Pages site](https://cse512-18s.github.io/organismal-thermal-stress/).
