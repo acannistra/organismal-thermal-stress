@@ -93,24 +93,56 @@ map.on('load', function(x){
 
 })
 
+
+
+
+
 function drawTimeSlider(err, data){
 	// inspration: https://bl.ocks.org/mbostock/3883245
 
+	function brushed() {
+	  if (d3.event.sourceEvent.type === "brush") return;
+	  var d0 = d3.event.selection.map(x.invert),
+	      d1 = d0.map(d3.timeDay.round);
+
+	  function pad(n){return n<10 ? '0'+n : n}
+
+	  var start = d1[0]
+	  console.log(pad(start.getFullYear()).toString() + pad(start.getMonth()).toString() + pad(start.getDate()).toString())
+	  // d3.select(this).call(d3.event.target.move, d1.map(x));
+
+	}
+
+
+
 	if (err) throw err; 
+
 
 
 	var g = timebrush.append("g").attr("transform", 
       "translate(" + timebrush_margin.left + "," + timebrush_margin.top + ")"
    	);
 
-
-
-
-	var x = d3.scaleTime().rangeRound([0, timebrush_width]);
+   	var x = d3.scaleTime().rangeRound([0, timebrush_width]);
 		x.domain(d3.extent(data, function(d) { return d.date; }));
-
 	var y = d3.scaleLinear().rangeRound([timebrush_height, 0]);
 	  	y.domain([0, d3.max(data, function(d) { return d.area; })]);
+
+
+
+	// brushing code
+	var brush = d3.brushX()
+	    .extent([[0, 0], [timebrush_width, timebrush_height]])
+	    .on("brush", brushed)
+
+
+	var gb = timebrush.append("g")
+	    .attr("class", "brush")
+	    .call(brush)
+	    .selectAll("rect")
+	      .attr("y", -6)
+    	  .attr("height", timebrush_height + 7);
+
 
 
 
@@ -143,6 +175,7 @@ function drawTimeSlider(err, data){
 	    .attr("text-anchor", "end")
 	    .attr("font-size", "10")
 	    .text("Area (sq. mi)");
+
 
 
 
