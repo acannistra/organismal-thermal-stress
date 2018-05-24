@@ -2,7 +2,7 @@ import pandas as pd
 import geopandas as gpd
 from subprocess import call
 from os.path import split, basename, join
-from os import listdir
+from os import listdir, remove
 from tempfile import NamedTemporaryFile
 import matplotlib.pyplot as plt
 import geojson
@@ -14,6 +14,10 @@ from PIL import Image
 from datetime import datetime
 from multiprocessing import Pool
 from functools import partial
+import rasterio
+import geojson
+from rasterio.features import shapes
+
 import tqdm
 
 
@@ -34,7 +38,7 @@ def pointsToGrid(data, raster_outfile, xsize=100, ysize=100):
         </OGRVRTDataSource>
     """
 
-    with NamedTemporaryFile('w', suffix = '.csv', delete=False) as tmpf:
+    with NamedTemporaryFile('w', suffix = '.csv') as tmpf:
         # save csv
         print(tmpf.name)
         tmpdir, tmpfname = split(tmpf.name)
@@ -54,10 +58,19 @@ def pointsToGrid(data, raster_outfile, xsize=100, ysize=100):
         call(["gdal_grid", vrtTmp.name, raster_outfile, "-outsize", str(xsize), str(ysize), 
               "-a", "invdistnn:radius=30"])
         vrtTmp.close()
-        
-    ## We ought to continue processing and remove those TIF files they're big 
-
     
+    return(raster_outfile)
+        
+
+def generateImageAndPolygonFromRaster(raster, outfile_suffix, threshold_high):
+    with rasterio.open(raster, 'r') as src:
+        print("reading " + raster)
+        # read image into ndarray
+        im = src.read()
+        bounds = src.bounds
+        stress_thresh_shapes= list(shapes(np.uint8(im > threshold_high)))#, transform=src.transform))
+
+       
 
     
 def process_grouped_xyz(xyzgroup, thresh_high, outdir, xsize, ysize):
@@ -71,8 +84,20 @@ def process_grouped_xyz(xyzgroup, thresh_high, outdir, xsize, ysize):
     """
     
     outfile_prefix = xyzgroup[0].strftime("%Y%m%d") # it's a date
+    generatedRasterFilename = pointsToGrid(xyzgroup[1], join(outdir, outfile_prefix + ".tif"), xsize, ysize)
+    generateImageAndPolygonFromRaster(generatedRasterFilename, outfile_prefix, thresh_high)
     
-    pointsToGrid(xyzgroup[1], join(outdir, outfile_prefix + ".tif"), xsize, ysize)
+    try: 
+        remove(generatedRasterFilename)
+    except Exception as e:
+        print(e)
+        
+    return(outfile_prefix)
+    
+    
+    
+    
+    
     
 
 @click.command()
