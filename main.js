@@ -29,7 +29,6 @@ var comma_formatter = d3.format(",.1f")
 
 map.on('load', function(x){
 	var img = d3.csv('notebooks/piltest.ref', function(d) {
-		console.log(d)
 		d = d.columns
 
 		d3.json("notebooks/piltest.gif.geojson", (d) => d3.select(".large").select('tspan').text(comma_formatter(turf.area(d)/ 2589988.110336))) // square miles
@@ -62,7 +61,7 @@ map.on('load', function(x){
 			}, 
 			'attribution' : "Buckley Lab",
 			'paint' : {
-				'raster-opacity' : 0.30
+				'raster-opacity' : 0.0
 			}
 
 		});
@@ -76,7 +75,7 @@ map.on('load', function(x){
 		})
 
 		
-		var parseDate = d3.timeParse("%b %Y");
+		var parseDate = d3.timeParse("%b-%y");
 
 		function datatype(d) {
 		  d.date = parseDate(d.date);
@@ -94,7 +93,42 @@ map.on('load', function(x){
 })
 
 
+function loadNewData(dateString){
+	var urlroot = "https://s3-us-west-2.amazonaws.com/stressviz/CO_all_273/"+dateString
+	d3.csv(urlroot+".ref", function(d){
+		d = d.columns
+		d3.json(urlroot + ".geojson", function(geodata){
+			d3.select(".large").select('tspan').text(comma_formatter(turf.area(geodata)/ 2589988.110336))
+			map.getSource('stress-poly-src').setData(geodata)
+		})
 
+		map.removeLayer('temps');
+		map.removeSource('temps');
+
+		map.addLayer({
+				"id" : "temps",
+				"type" : 'raster',
+				'source' : {
+					"type" : 'image', 
+					"url"  : urlroot + ".gif",
+
+					'coordinates' : [
+						[parseFloat(d[1]), parseFloat(d[3])], // [top, left]
+						[parseFloat(d[2]), parseFloat(d[3])], // [top, right]
+						[parseFloat(d[2]), parseFloat(d[4])], // [bottom, right]
+						[parseFloat(d[1]), parseFloat(d[4])]  // [bottom, left]
+					]
+				}, 
+				'attribution' : "Buckley Lab",
+				'paint' : {
+					'raster-opacity' : 0.0
+				}
+
+			});
+	})
+
+	
+}
 
 
 function drawTimeSlider(err, data){
@@ -108,7 +142,8 @@ function drawTimeSlider(err, data){
 	  function pad(n){return n<10 ? '0'+n : n}
 
 	  var start = d1[0]
-	  console.log(pad(start.getFullYear()).toString() + pad(start.getMonth()).toString() + pad(start.getDate()).toString())
+	  var dateString = pad(start.getFullYear()).toString() + pad(start.getMonth()).toString() + pad(start.getDate()).toString()
+	  loadNewData(dateString)
 	  // d3.select(this).call(d3.event.target.move, d1.map(x));
 
 	}
