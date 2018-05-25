@@ -78,6 +78,7 @@ map.on('load', function(x){
 		var parseDate = d3.timeParse("%b-%y");
 
 		function datatype(d) {
+		  console.log(d)
 		  d.date = parseDate(d.date);
 		  d.area = +d.area;
 		  return d;
