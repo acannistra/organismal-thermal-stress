@@ -5,8 +5,10 @@ from os.path import split, basename, join
 from os import listdir, remove
 from tempfile import NamedTemporaryFile
 import matplotlib.pyplot as plt
+from matplotlib.colors import Normalize
 import geojson
 import numpy as np
+import matplotlib.pyplot as plt
 from shapely.geometry import Point, Polygon, mapping
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
@@ -15,8 +17,12 @@ from datetime import datetime
 from multiprocessing import Pool
 from functools import partial
 import rasterio
+import pyproj
 import geojson
+from shapely.geometry import Polygon, mapping
+import shapely.ops as ops
 from rasterio.features import shapes
+from rasterio.plot import show
 
 import tqdm
 
@@ -62,20 +68,72 @@ def pointsToGrid(data, raster_outfile, xsize=100, ysize=100):
     return(raster_outfile)
         
 
-def generateImageAndPolygonFromRaster(raster, outfile_suffix, threshold_high):
+def generateImageAndPolygonFromRaster(raster, outfile_suffix, threshold_high, compute_area = False):
     with rasterio.open(raster, 'r') as src:
         print("reading " + raster)
         # read image into ndarray
         im = src.read()
         bounds = src.bounds
+        im = np.transpose(im, [1,2,0])
+        im = im.squeeze()  
+        
         stress_thresh_shapes= list(shapes(np.uint8(im > threshold_high)))#, transform=src.transform))
+        stress_thresh_polys = []
+        for poly, value in stress_thresh_shapes:
+            if(value == 1.0):
+                print(len(poly['coordinates']))
+                poly['coordinates'] = [src.affine * xy for xy in poly['coordinates'][0]]
+                stress_thresh_polys.append(Polygon(shell=poly['coordinates']))
+            
+        area = 0
+        if (compute_area):
+            print("computing area...\r")
+            # compute polygon area
 
-       
+            def get_geom_area(geom):
+                _geom_area = ops.transform(
+                    partial(
+                        pyproj.transform,
+                        pyproj.Proj(init='EPSG:4326'),
+                        pyproj.Proj(
+                            proj='aea',
+                            lat1=geom.bounds[1],
+                            lat2=geom.bounds[3])),
+                    geom)
+                
+                return(_geom_area.area)
+
+            area = sum([get_geom_area(g) for g in stress_thresh_polys])
+            print(area)
+            print("area: {}".format(area))
+    
+            print('done.')
+            
+        
+        with open(outfile_suffix + ".geojson", 'w') as gjf:
+            geojson.dump(geojson.GeometryCollection(stress_thresh_polys), gjf)
+        
+        
+        
+        
+        im = np.flip(im, 0)
+
+        norm = Normalize(vmin=200, vmax=320, clip=False) # ARBITRARY VALUES
+
+        im = Image.fromarray(np.uint8(plt.cm.viridis(norm(im)) * 255))
+        im.save(outfile_suffix + ".gif")
+        with open(outfile_suffix + '.ref', 'w') as f:
+            f.write("{}.gif,{},{},{},{},{}.geojson".format(basename(outfile_suffix),
+                                                           bounds.left, bounds.right, bounds.bottom, bounds.top,
+                                                           basename(outfile_suffix)))
+        
+        
+        
 
     
-def process_grouped_xyz(xyzgroup, thresh_high, outdir, xsize, ysize):
+def process_grouped_xyz(xyzgroup, thresh_high, outdir, xsize, ysize, compute_area = False):
     """
-        Mapper work function for a group of xyz rows. Assumes (x, y, z). 
+        Mapper work function for a group of xyz rows, index is datetime. Assumes (x, y, z). 
         
         Uses xyzgroup[0] as prefix for file names.
         
@@ -85,14 +143,17 @@ def process_grouped_xyz(xyzgroup, thresh_high, outdir, xsize, ysize):
     
     outfile_prefix = xyzgroup[0].strftime("%Y%m%d") # it's a date
     generatedRasterFilename = pointsToGrid(xyzgroup[1], join(outdir, outfile_prefix + ".tif"), xsize, ysize)
-    generateImageAndPolygonFromRaster(generatedRasterFilename, outfile_prefix, thresh_high)
+    area = generateImageAndPolygonFromRaster(generatedRasterFilename, 
+                                             join(outdir, outfile_prefix),
+                                             thresh_high, 
+                                             compute_area)
     
     try: 
         remove(generatedRasterFilename)
     except Exception as e:
         print(e)
         
-    return(outfile_prefix)
+    return((outfile_prefix, area))
     
     
     
@@ -106,7 +167,8 @@ def process_grouped_xyz(xyzgroup, thresh_high, outdir, xsize, ysize):
 @click.option("--date_col", help="date column in csv (int or str)", default=0)
 @click.option("--cores", help="number of cores to parallelize into. default: all", type=click.INT)
 @click.option("--thresh_high", help='upper temperature threshold (degrees kelvin)', type=click.INT)
-def main(file, o, date_col, cores, thresh_high):
+@click.option("--area_file", help="file to write stressed area into", default=None)
+def main(file, o, date_col, cores, thresh_high, area_file):
     """
     Process FILE into daily image/polygons for web visualization. 
     """
@@ -117,21 +179,28 @@ def main(file, o, date_col, cores, thresh_high):
     data.columns = ["y", "x", "z"]
 
     
-    data = data.iloc[:1000] #DELETE THIS
-
-    
     daygroups = data.groupby(pd.Grouper(freq="d"))
 
-    
+    compute_area = False
+    if(area_file is not None):
+        compute_area = True
     
     if(cores is None):
         processpool = Pool()
     else:
         processpool = Pool(processes = cores)
         
-    _process_grouped_xyz = partial(process_grouped_xyz, thresh_high = thresh_high, outdir= o, xsize = 500, ysize = 500)
+    _process_grouped_xyz = partial(process_grouped_xyz, 
+                                   thresh_high = thresh_high, 
+                                   outdir= o,
+                                   xsize = 500, ysize = 500, 
+                                   compute_area=compute_area)
     ret = list(processpool.imap(_process_grouped_xyz, daygroups))
-    print(ret)
+    
+    if(area_file is not None):
+        _a = pd.DataFrame(np.array(ret).T)
+        _a.to_csv(area_file, index=False)
+    
     
 
     
