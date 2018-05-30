@@ -137,6 +137,8 @@ function loadNewData(dateString){
 }
 
 
+
+
 function drawTimeSlider(err, data){
 	// inspration: https://bl.ocks.org/mbostock/3883245
 
@@ -164,7 +166,7 @@ function drawTimeSlider(err, data){
       "translate(" + timebrush_margin.left + "," + timebrush_margin.top + ")"
    	);
 
-   	var x = d3.scaleTime().rangeRound([0, timebrush_width]);
+    x = d3.scaleTime().rangeRound([0, timebrush_width]);
 		x.domain(d3.extent(data, function(d) { return d.date; }));
 	var y = d3.scaleLinear().rangeRound([timebrush_height, 0]);
 	  	y.domain([0, d3.max(data, function(d) { return d.area; })]);
@@ -180,9 +182,7 @@ function drawTimeSlider(err, data){
 	var gb = timebrush.append("g")
 	    .attr("class", "brush")
 	    .call(brush)
-	    .selectAll("rect")
-	      .attr("y", -6)
-    	  .attr("height", timebrush_height + 7);
+
 
 
 
@@ -216,6 +216,10 @@ function drawTimeSlider(err, data){
 	    .attr("text-anchor", "end")
 	    .attr("font-size", "10")
 	    .text("Area (sq. mi)");
+
+
+
+	gb.call(brush.move,[new Date('1981-01-01'), new Date('1981-02-30')].map(x))
 
 
 

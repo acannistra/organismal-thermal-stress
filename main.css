@@ -18,6 +18,10 @@ body{
 
 /**/
 
+.handle {
+  pointer-events: none;
+}
+
 .map-overlay {
     z-index: 100;
     position: absolute;
