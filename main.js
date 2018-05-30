@@ -2,6 +2,7 @@
 
 
 mapboxgl.accessToken = "pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA";
+var dataUrlRoot = "https://s3-us-west-2.amazonaws.com/stressviz/CO_all_273/"
 
 var colorado_bounds = [
 	[-110.63 , 36.43],
@@ -75,7 +76,7 @@ map.on('load', function(x){
 		})
 
 		
-		var parseDate = d3.timeParse("%b-%y");
+		var parseDate = d3.timeParse("%b-%d-%y");
 
 		function datatype(d) {
 		  console.log(d)
@@ -85,7 +86,7 @@ map.on('load', function(x){
 		}
 
 		queue()
-		    .defer(d3.csv, "data/fakearea.csv", datatype)
+		    .defer(d3.csv, dataUrlRoot + "all_area.csv", datatype)
 		    .await(drawTimeSlider);
 		
 
@@ -93,13 +94,17 @@ map.on('load', function(x){
 
 })
 
+var _dsParser = d3.timeParse("%Y%m%d")
+var dateStringOpts = { year: 'numeric', month: 'long', day: 'numeric' };
 
 function loadNewData(dateString){
-	var urlroot = "https://s3-us-west-2.amazonaws.com/stressviz/CO_all_273/"+dateString
-	d3.csv(urlroot+".ref", function(d){
+	var date_url = dataUrlRoot + dateString
+	d3.csv(date_url+".ref", function(d){
 		d = d.columns
-		d3.json(urlroot + ".geojson", function(geodata){
+		date = _dsParser(dateString)
+		d3.json(date_url + ".geojson", function(geodata){
 			d3.select(".large").select('tspan').text(comma_formatter(turf.area(geodata)/ 2589988.110336))
+			d3.select("#day-display").select('h1').text(date.toLocaleDateString('en-US', dateStringOpts) )
 			map.getSource('stress-poly-src').setData(geodata)
 		})
 
@@ -111,7 +116,7 @@ function loadNewData(dateString){
 				"type" : 'raster',
 				'source' : {
 					"type" : 'image', 
-					"url"  : urlroot + ".gif",
+					"url"  : date_url + ".gif",
 
 					'coordinates' : [
 						[parseFloat(d[1]), parseFloat(d[3])], // [top, left]
