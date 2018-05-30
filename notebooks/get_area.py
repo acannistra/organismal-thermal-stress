@@ -32,8 +32,8 @@ def main(dir, outfile):
     data = data.set_index(pd.to_datetime(data["date"]))
     data = data.sort_index()
     print(data)
-    monthly = data.groupby(pd.Grouper(freq="M")).mean()
-    monthlyDateStr = monthly.index.map(lambda x: pd.to_datetime(x).strftime("%b-%y"))
+    monthly = data.groupby(pd.Grouper(freq="W")).mean()
+    monthlyDateStr = monthly.index.map(lambda x: pd.to_datetime(x).strftime("%b-%d-%y"))
     monthly['date'] = monthlyDateStr
     print(monthly)
     monthly[['date', 'area']].to_csv(outfile, index=None, header=True)
