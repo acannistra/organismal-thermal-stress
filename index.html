@@ -10,15 +10,36 @@
 		margin-left: 5%;
 		width: 80%;
 	}
+    .foot {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        padding-top: 50px;
+        padding-bottom: 50px;
+    }
 	</style>
 </head>
 <body>
 	<div style="width: 100%">
-		<h1>Organismal Thermal Stress <small>by: <a href="http://www.anthonycannistra.com/about">Tony Cannistra</a></small></h1>
+		<h1>Organismal Thermal Stress <span style="font-size: 20px">by <a href="http://www.anthonycannistra.com/about">Tony Cannistra</a> for UW <a href="https://courses.cs.washington.edu/courses/cse512/18sp/">CSE512-18sp</a>.</span></h1>
 	</div>
-	<div style="margin: auto; width: 90%">
-		<img width="100%"src="/images/shot1.png"/>		
+    <p>
+        <b>Poster:</b> <a href="poster.pdf">poster.pdf</a> &mdash; <b>Final Paper:</b> <a href="paper.pdf">paper.pdf</a> &mdash; <b>Viz:</b> <a href="organismal-stress-viz.html">organismal-stress-viz.html</a>
+    </p>
+	<iframe src="organismal-stress-viz.html" width="100%" height="800px"></iframe>
+
+	<div style="width: 100%">
+		<h2>Abstract</h2>
+		<p>
+			Anthropogenic climate change is having a dramatic effect on earth's natural systems. To maintain functional ecosystems and preserve biodiversity in this changing world, the conservation community has come to rely on computational models to inform decision making. One particular class of model, known as a "biophysical model," uses mathematical representations of energy balance and organism-environment heat transfer to translate environmental conditions into organismal body temperatures. When an organism's body temperature crosses a laboratory-defined biophysical temperature threshold (i.e. goes below a lower threshold or above a high threshold), we consider the organism to be experiencing "thermal stress." An excessively stressed organism may move to areas of lower thermal stress, or experience population decline. Here I create an interactive web-based visualization for the exploration of several decades of modeled daily thermal stress. This visualization will serve as a foundation for a suite of public tools for the dissemination of complex biophysical models to aid in conservation decision-making. 
+		</p>	
+
+
 	</div>
+    <div class="foot">
+        Tony Cannistra, CSE512-18Sp (Heer).
+    </div>
 </body>
 </html>
 
