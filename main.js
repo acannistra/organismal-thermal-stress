@@ -29,12 +29,12 @@ var timebrush = d3.select('#timebrush').append('svg')
 var comma_formatter = d3.format(",.1f")
 
 map.on('load', function(x){
-	var img = d3.csv('notebooks/piltest.ref', function(d) {
+	var img = d3.csv(dataUrlRoot + "19810101.ref", function(d) {
 		d = d.columns
 
-		d3.json("notebooks/piltest.gif.geojson", (d) => d3.select(".large").select('tspan').text(comma_formatter(turf.area(d)/ 2589988.110336))) // square miles
+		d3.json(dataUrlRoot + "19810101.geojson", (d) => d3.select(".large").select('tspan').text(comma_formatter(turf.area(d)/ 2589988.110336))) // square miles
 
-		map.addSource('stress-poly-src', { type: 'geojson', data: "notebooks/piltest.gif.geojson" });
+		map.addSource('stress-poly-src', { type: 'geojson', data: dataUrlRoot + "19810101.geojson" });
 
 		
 		map.addLayer({
@@ -51,7 +51,7 @@ map.on('load', function(x){
 			"type" : 'raster',
 			'source' : {
 				"type" : 'image', 
-				"url"  : "notebooks/" + d[0],
+				"url"  : dataUrlRoot + "19810101.gif",
 
 				'coordinates' : [
 					[parseFloat(d[1]), parseFloat(d[3])], // [top, left]
