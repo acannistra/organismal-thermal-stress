@@ -1,5 +1,5 @@
 # Visualizing Organismal Thermal Stress
-[**Tony Cannistra**](anthonycannistra.com) | [See Visualization](cse512-18s.github.io/organismal-thermal-stress/)
+[**Tony Cannistra**](anthonycannistra.com) | [See Visualization](https://cse512-18s.github.io/organismal-thermal-stress/)
 
 ## Summary Proposal 
 
